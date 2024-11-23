@@ -90,6 +90,8 @@ pub struct InitializeGenesis<'info> {
     pub state: Account<'info, Genesis>,
     #[account(init, payer = authority, token::mint = reward_mint, token::authority = vault, seeds = [b"rewards"], bump)]
     pub reward_account: Account<'info, TokenAccount>,
+    #[account(init_if_needed, payer = authority, token::mint = reward_mint, token::authority = authority)]
+    pub devshare: Account<'info, TokenAccount>,
     pub reward_mint: Account<'info, Mint>,
     pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,

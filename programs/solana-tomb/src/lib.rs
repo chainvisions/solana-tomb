@@ -23,7 +23,7 @@ pub mod solana_tomb {
     pub fn initialize(ctx: Context<InitializeGenesis>) -> Result<()> {
         let state = &mut ctx.accounts.state;
         state.authority = ctx.accounts.authority.key();
-        state.dev_share = ctx.accounts.authority.key(); // TODO: We prob need to create a new token account for this
+        state.dev_share = ctx.accounts.devshare.key();
         state.reward_mint = ctx.accounts.reward_mint.key();
 
         // Create new vault account.
@@ -34,8 +34,7 @@ pub mod solana_tomb {
                 to: ctx.accounts.vault.to_account_info()
             }
         );
-        let rent_xfer_res = system_program::transfer(rent_xfer_context, 20000000);
-        if !rent_xfer_res.is_ok() {
+        if !system_program::transfer(rent_xfer_context, 20000000).is_ok() {
             return err!(errors::GenesisError::SolTransferFailed);
         }
 
