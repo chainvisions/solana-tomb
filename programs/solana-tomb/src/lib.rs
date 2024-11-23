@@ -159,6 +159,3 @@ pub mod solana_tomb {
         Ok(())
     }
 }
-
-#[derive(Accounts)]
-pub struct Initialize {}
