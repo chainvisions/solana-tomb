@@ -7,6 +7,7 @@ pub struct Genesis {
     pub dev_share: Pubkey,
     pub reward_mint: Pubkey,
     pub vault: Pubkey,
+    pub devshare_fee: u16,
     pub bump: u8,
     pub vault_bump: u8,
     pub reward_bump: u8
@@ -35,7 +36,7 @@ pub struct Depositor {
 }
 
 impl Genesis {
-    pub const STATE_SIZE: usize = 32 + 32 + 32 + 32 + 1 + 1 + 1;
+    pub const STATE_SIZE: usize = 32 + 32 + 32 + 32 + 1 + 1 + 1 + 2;
 }
 
 impl Depositor {

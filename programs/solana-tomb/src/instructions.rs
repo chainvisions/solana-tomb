@@ -58,6 +58,8 @@ pub struct ClaimRewards<'info> {
     pub reward_mint: Account<'info, Mint>,
     #[account(mut, constraint = user_reward_account.mint == state.reward_mint)]
     pub user_reward_account: Account<'info, TokenAccount>,
+    #[account(mut, constraint = devshare.key() == state.dev_share)]
+    pub devshare: Account<'info, TokenAccount>,
     pub token_program: Program<'info, Token>,
     pub clock: Sysvar<'info, Clock>
 }

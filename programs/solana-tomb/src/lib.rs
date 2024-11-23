@@ -24,6 +24,7 @@ pub mod solana_tomb {
         let state = &mut ctx.accounts.state;
         state.authority = ctx.accounts.authority.key();
         state.dev_share = ctx.accounts.devshare.key();
+        state.devshare_fee = 250;
         state.reward_mint = ctx.accounts.reward_mint.key();
 
         // Create new vault account.
@@ -147,6 +148,19 @@ pub mod solana_tomb {
             if !token::mint_to(mint_ctx, rewards).is_ok() {
                 return err!(errors::GenesisError::MintRewardFailed);
             };
+
+            let devshare_cut = (rewards * u64::from(ctx.accounts.state.devshare_fee)) / 10000;
+            let devshare_ctx = CpiContext::new(
+                ctx.accounts.token_program.to_account_info(),
+                MintTo {
+                    authority: ctx.accounts.vault.to_account_info(),
+                    to: ctx.accounts.devshare.to_account_info(),
+                    mint: ctx.accounts.reward_mint.to_account_info()
+                }
+            );
+            if !token::mint_to(devshare_ctx, devshare_cut).is_ok() {
+                return err!(errors::GenesisError::MintRewardFailed);
+            }
 
             emit!(RewardsPaidEvent {
                 user: ctx.accounts.depositor.key(),
