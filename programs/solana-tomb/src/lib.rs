@@ -19,6 +19,7 @@ pub use events::*;
 pub mod solana_tomb {
     use super::*;
 
+    /// Initializes the genesis pool with all of its accounts.
     pub fn initialize(ctx: Context<InitializeGenesis>) -> Result<()> {
         let state = &mut ctx.accounts.state;
         state.authority = ctx.accounts.authority.key();
@@ -44,6 +45,7 @@ pub mod solana_tomb {
         Ok(())
     }
     
+    /// Adds a new pool to the genesis pool.
     pub fn add_pool(ctx: Context<AddPool>, reward_rate: u64, end_at: u64) -> Result<()> {
         let pool = &mut ctx.accounts.pool;
         pool.underlying = ctx.accounts.token_mint.key();
@@ -55,6 +57,7 @@ pub mod solana_tomb {
         Ok(())
     }
 
+    /// Deposits tokens into the genesis pool.
     pub fn deposit(ctx: Context<Deposit>, amount: u64) -> Result<()> {
         let pool = &mut ctx.accounts.pool;
         let user_info = &mut ctx.accounts.user_info;
@@ -87,6 +90,7 @@ pub mod solana_tomb {
         Ok(())
     }
 
+    /// Withdraws tokens from the genesis pool.
     pub fn withdraw(ctx: Context<Withdraw>, amount: u64) -> Result<()> {
         let pool = &mut ctx.accounts.pool;
         let user_info = &mut ctx.accounts.user_info;
@@ -121,6 +125,7 @@ pub mod solana_tomb {
         Ok(())
     }
 
+    /// Claims rewards from the genesis pool.
     pub fn claim_rewards(ctx: Context<ClaimRewards>) -> Result<()> {
         let pool = &mut ctx.accounts.pool;
         let user_info = &mut ctx.accounts.user_info;
