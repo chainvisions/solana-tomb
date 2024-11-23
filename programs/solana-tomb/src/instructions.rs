@@ -8,12 +8,13 @@ pub struct Deposit<'info> {
     pub depositor: Signer<'info>,
     #[account(mut, constraint = pool.underlying == user_account.mint)]
     pub pool: Account<'info, Pool>,
-    #[account(mut, constraint = depositor.key() == user_info.authority)]
+    #[account(init_if_needed, seeds = [depositor.key().as_ref(), pool.key().as_ref()], bump, space = 8 + Depositor::DEPOSITOR_SIZE, payer = depositor, constraint = depositor.key() == user_info.authority)]
     pub user_info: Account<'info, Depositor>,
     #[account(mut, constraint = pool_account.key() == pool.pool_account)]
     pub pool_account: Account<'info, TokenAccount>,
     #[account(mut)]
     pub user_account: Account<'info, TokenAccount>,
+    pub system_program: Program<'info, System>,
     pub token_program: Program<'info, Token>,
     pub clock: Sysvar<'info, Clock>
 }
@@ -86,15 +87,15 @@ pub struct AddPool<'info> {
 pub struct InitializeGenesis<'info> {
     #[account(mut)]
     pub authority: Signer<'info>,
-    #[account(seeds = [b"vault"], bump)]
+    #[account(mut, seeds = [b"vault"], bump)]
     pub vault: SystemAccount<'info>,
     #[account(init, space = 8 + Genesis::STATE_SIZE, payer = authority, seeds = [b"state"], bump)]
-    pub state: Account<'info, Genesis>,
+    pub state: Account<'info, Genesis>, 
+    pub reward_mint: Account<'info, Mint>,
     #[account(init, payer = authority, token::mint = reward_mint, token::authority = vault, seeds = [b"rewards"], bump)]
     pub reward_account: Account<'info, TokenAccount>,
     #[account(init_if_needed, payer = authority, token::mint = reward_mint, token::authority = authority)]
     pub devshare: Account<'info, TokenAccount>,
-    pub reward_mint: Account<'info, Mint>,
     pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,
 }
